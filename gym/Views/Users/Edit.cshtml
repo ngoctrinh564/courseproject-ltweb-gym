@@ -1,0 +1,81 @@
+﻿@model gym.Data.User
+
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">✏️ Chỉnh sửa thông tin người dùng</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label fw-bold">Tên đăng nhập</label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-bold">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ReferenceId" class="form-label fw-bold">Reference ID</label>
+                    <input asp-for="ReferenceId" class="form-control" type="number" min="0" />
+                    <span asp-validation-for="ReferenceId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RoleId" class="form-label fw-bold">Vai trò</label>
+                    <select asp-for="RoleId" name="RoleId" class="form-select" asp-items="ViewBag.RoleId" required data-val-required="Vui lòng chọn vai trò.">
+                        <option value="">-- Chọn vai trò --</option>
+                    </select>
+                    <span asp-validation-for="RoleId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="IsAtive" class="form-label fw-bold">Kích hoạt</label>
+                    <select asp-for="IsAtive" name="IsAtive" class="form-select" required>
+                        <option value="true" selected="@(Model.IsAtive == true)">✅ Kích hoạt</option>
+                        <option value="false" selected="@(Model.IsAtive == false)">❌ Vô hiệu hóa</option>
+                    </select>
+                    <span asp-validation-for="IsAtive" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Trạng thái</label>
+                    <p class="form-control-plaintext">@(Model.IsAtive == true ? "Hoạt động" : "Vô hiệu hóa")</p>
+                    <input type="hidden" name="Status" value="@(Model.IsAtive == true ? "Hoạt động" : "Vô hiệu hóa")" />
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Quay lại</a>
+                    <button type="submit" class="btn btn-success">💾 Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (TempData["FormErrors"] != null)
+{
+    <div class="alert alert-danger mt-2">
+        @TempData["FormErrors"]
+    </div>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,49 @@
+﻿@model gym.Models.DTOs.LoginDto
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container-fluid login-wrapper">
+    <div class="row min-vh-100 align-items-center justify-content-center">
+        <div class="col-lg-5 col-md-7 col-sm-10">
+            <div class="card shadow-lg p-4 border-0 rounded-4 bg-white animate__animated animate__fadeIn">
+                <div class="text-center mb-4">
+                    <img src="~/images/logo/logo.jpg" class="img-fluid mb-3" style="width: 100px;" alt="Logo" />
+                    <h3 class="text-primary fw-bold">Chào mừng bạn quay lại!</h3>
+                    <p class="text-muted small">Vui lòng đăng nhập để tiếp tục</p>
+                </div>
+                <form asp-action="Login" method="post" novalidate>
+                    <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="UserName" class="form-control rounded-3 border-primary shadow-sm" placeholder="Tên đăng nhập" />
+                        <label asp-for="UserName">Tên đăng nhập</label>
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" type="password" class="form-control rounded-3 border-primary shadow-sm" placeholder="Mật khẩu" />
+                        <label asp-for="Password">Mật khẩu</label>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button type="submit" class="btn btn-primary w-50 fw-semibold">Đăng nhập</button>
+                        <a asp-action="ForgotPassword" class="text-decoration-none small text-primary">Quên mật khẩu?</a>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-0 small">
+                            Chưa có tài khoản?
+                            <a asp-action="Register" class="text-decoration-none fw-bold text-primary">Đăng ký ngay</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

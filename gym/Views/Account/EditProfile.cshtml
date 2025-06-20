@@ -1,0 +1,34 @@
+﻿@model gym.Models.DTOs.EditProfileDto
+@{
+    ViewData["Title"] = "Chỉnh sửa trang cá nhân";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Chỉnh sửa trang cá nhân</h2>
+    <form asp-action="EditProfile" method="post" class="w-50 mx-auto">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Tên đăng nhập</label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Mật khẩu mới (để trống nếu không đổi)</label>
+            <input asp-for="Password" class="form-control" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            <a asp-action="Index" asp-controller="Home" class="btn btn-link">Hủy</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,64 @@
+﻿@using gym.ViewModels
+@model RevenueReportViewModel
+@{
+    ViewData["Title"] = "Báo cáo doanh thu";
+}
+
+<h2>Báo cáo doanh thu</h2>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-2">
+            <input type="number" name="year" class="form-control" placeholder="Năm" value="@Model.Year" />
+        </div>
+        <div class="col-md-2">
+            <select name="month" class="form-control">
+                <option value="">--Tháng--</option>
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <option value="@i" @@(Model.Month == i ? "selected" : "")>Tháng @i</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="quarter" class="form-control">
+                <option value="">--Quý--</option>
+                @for (int i = 1; i <= 4; i++)
+                {
+                    <option value="@i" @@(Model.Quarter == i ? "selected" : "")>Quý @i</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+    </div>
+    <div class="mb-3">
+        <a asp-action="ExportToExcel" asp-route-year="@Model.Year" asp-route-month="@Model.Month" asp-route-quarter="@Model.Quarter" class="btn btn-success">📁 Xuất Excel</a>
+        <a asp-action="ExportToPdf" asp-route-year="@Model.Year" asp-route-month="@Model.Month" asp-route-quarter="@Model.Quarter" class="btn btn-danger">📄 Xuất PDF</a>
+    </div>
+</form>
+
+<h4>Tổng doanh thu: @Model.TotalRevenue.ToString("C")</h4>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Ngày thanh toán</th>
+            <th>Thành viên</th>
+            <th>Phương thức</th>
+            <th>Số tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PaymentDetails)
+        {
+            <tr>
+                <td>@item.PaymentDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.MemberName</td>
+                <td>@item.Method</td>
+                <td>@item.Total.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

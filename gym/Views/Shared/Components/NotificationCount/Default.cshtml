@@ -1,0 +1,69 @@
+﻿@model int
+
+<a href="/Notification/List" class="position-relative text-decoration-none">
+    <div class="notification-icon-wrapper">
+        <i class="bi bi-bell-fill fs-5"></i>
+        @if (Model > 0)
+        {
+            <span class="notification-badge">@Model</span>
+        }
+    </div>
+</a>
+
+<style>
+    .notification-icon-wrapper {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #4b5563, #1f2937);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+        .notification-icon-wrapper:hover {
+            background: linear-gradient(145deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+        }
+
+    .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background-color: #ef4444;
+        color: white;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        border-radius: 999px;
+        font-weight: bold;
+        box-shadow: 0 0 0 2px white;
+        animation: pulse-badge 2s infinite;
+    }
+
+    @@keyframes pulse-badge {
+        0%
+
+    {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+
+    }
+</style>

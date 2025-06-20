@@ -1,0 +1,43 @@
+﻿@using System
+@model IEnumerable<gym.Data.Member>
+
+@{
+    ViewData["Title"] = "MyMembers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Danh sách hội viên phụ trách</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Điện thoại</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var member in Model)
+            {
+                <tr>
+                    <td>@(member.FullName ?? "Chưa có thông tin")</td>
+                    <td>@(member.DateOfBirth.HasValue ? member.DateOfBirth.Value.ToShortDateString() : "Chưa có thông tin")</td>
+                    <td>@(member.Phone ?? "Chưa có thông tin")</td>
+                    <td>@(member.CreateDate.HasValue ? member.CreateDate.Value.ToShortDateString() : "Chưa có thông tin")</td>
+                    <td>
+                        <a href="@Url.Action("MemberHistory", new { id = member.MemberId })" class="btn btn-sm btn-info">Lịch sử tập</a>
+                        <a href="@Url.Action("SendReminder", new { memberId = member.MemberId })" class="btn btn-sm btn-warning">Gửi nhắc</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="5">Không có dữ liệu hội viên.</td></tr>
+        }
+    </tbody>
+</table>

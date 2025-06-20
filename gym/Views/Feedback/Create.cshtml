@@ -1,0 +1,62 @@
+﻿@model gym.Data.Feedback
+
+@{
+    ViewData["Title"] = "Gửi phản hồi";
+}
+
+<div class="container mt-5" style="max-width: 700px;">
+    <div class="card shadow rounded-4">
+        <div class="card-body p-5">
+            <h3 class="mb-4 text-primary text-center">📝 Gửi phản hồi của bạn</h3>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group mb-3">
+                    <label asp-for="Content" class="form-label fw-semibold">Nội dung phản hồi</label>
+                    <textarea asp-for="Content" class="form-control rounded-3 border border-secondary-subtle"
+                              placeholder="Bạn nghĩ gì về dịch vụ, huấn luyện viên, thiết bị...?"
+                              rows="5"></textarea>
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                        <i class="bi bi-send-fill"></i> Gửi phản hồi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cảm ơn -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-labelledby="thankYouLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center border-success shadow">
+            <div class="modal-header bg-success text-white rounded-top">
+                <h5 class="modal-title w-100" id="thankYouLabel">🎉 Cảm ơn bạn!</h5>
+            </div>
+            <div class="modal-body py-4">
+                <p class="mb-0 fs-5">Phản hồi của bạn đã được ghi nhận. Chúng tôi trân trọng ý kiến đóng góp của bạn ❤️</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-success px-4" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (ViewBag.Message == "success")
+    {
+        <script>
+            const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+            thankYouModal.show();
+        </script>
+    }
+}

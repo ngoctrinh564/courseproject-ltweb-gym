@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận tài khoản - GYM Club</title>
+    <style>
+        body {
+            background-color: #e8f1fc;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .email-wrapper {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+            border-top: 8px solid #007bff;
+            overflow: hidden;
+        }
+
+        .email-header {
+            background-color: #ffffff;
+            padding: 32px;
+            text-align: center;
+        }
+
+            .email-header h1 {
+                color: #007bff;
+                margin: 0;
+                font-size: 28px;
+            }
+
+        .email-body {
+            padding: 32px;
+            color: #333;
+        }
+
+            .email-body h2 {
+                color: #0056b3;
+                margin-top: 0;
+            }
+
+        .otp-section {
+            background-color: #f0f8ff;
+            border: 2px dashed #007bff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .otp-input {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #007bff;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .otp-note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px 32px;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-header">
+            <h1>Xác Nhận Tài Khoản</h1>
+        </div>
+        <div class="email-body">
+            <h2>Xin chào {{FULLNAME}},</h2>
+            <p>Cảm ơn bạn đã đăng ký tài khoản tại <strong>GYM Club</strong>.</p>
+            <p>Mã xác thực (OTP) của bạn là:</p>
+
+            <div class="otp-section">
+                <input type="text" readonly class="otp-input" value="{{OTP}}" />
+                <div class="otp-note">Nhấn đúp hoặc bôi đen mã để sao chép</div>
+            </div>
+
+            <p class="note">Vui lòng nhập mã OTP vào hệ thống để hoàn tất xác thực. Mã có hiệu lực trong vòng 60 giây.</p>
+        </div>
+        <div class="email-footer">
+            Trân trọng,<br />
+            Đội ngũ GYM Club<br />
+            &copy; 2025 GYM Club. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

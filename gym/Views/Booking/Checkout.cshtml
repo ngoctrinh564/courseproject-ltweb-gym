@@ -1,0 +1,56 @@
+﻿@model gym.ViewModels.UnpaidPackageViewModel
+
+@{
+    ViewData["Title"] = "Xác nhận thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow p-4 rounded-4">
+        <h3 class="text-center text-primary mb-4">Xác nhận thanh toán</h3>
+
+        <dl class="row">
+            <dt class="col-sm-4">Mã thanh toán:</dt>
+            <dd class="col-sm-8 fw-semibold text-dark">@Model.PaymentId</dd>
+
+            <dt class="col-sm-4">Thanh toán:</dt>
+            <dd class="col-sm-8">@Model.Description</dd>
+
+            <dt class="col-sm-4">Số tiền (VNĐ):</dt>
+            <dd class="col-sm-8 text-success fw-bold">@Model.Total.ToString("N0")</dd>
+
+            <dt class="col-sm-4">Hạn thanh toán:</dt>
+            <dd class="col-sm-8">@Model.DueDate?.ToString("dd/MM/yyyy")</dd>
+        </dl>
+
+        <div class="text-center mt-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Chọn phương thức thanh toán
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <form asp-controller="Payment" asp-action="Checkout" method="post" class="d-inline">
+                            <input type="hidden" name="paymentId" value="@Model.PaymentId" />
+                            <button type="submit" class="dropdown-item">
+                                <i class="bi bi-currency-exchange me-2"></i>Thanh toán qua VNPay
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form asp-controller="PayPal" asp-action="Checkout" method="post" class="d-inline">
+                            <input type="hidden" name="paymentId" value="@Model.PaymentId" />
+                            <button type="submit" class="dropdown-item">
+                                <i class="bi bi-paypal me-2"></i>Thanh toán qua PayPal
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Unpaid", "Booking")" class="btn btn-outline-secondary">Quay lại danh sách</a>
+        </div>
+    </div>
+</div>

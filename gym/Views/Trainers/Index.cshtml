@@ -1,0 +1,127 @@
+﻿@model IEnumerable<gym.Data.Trainer>
+
+@{
+    ViewData["Title"] = "Danh sách Huấn luyện viên";
+    var user = Context.User;
+    var isAdmin = user.IsInRole("Admin");
+    Layout = isAdmin ? "~/Views/Shared/_AdminLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
+    string defaultAvatar = "images/trainer/avt-default.jpg";
+}
+
+<style>
+    .trainer-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .trainer-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .avatar-img {
+        height: 250px;
+        object-fit: cover;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .btn-sm i {
+        vertical-align: middle;
+    }
+</style>
+
+<h1 class="text-center mb-4 fw-bold text-primary"><i class="bi bi-people-fill me-2"></i>Danh sách Huấn luyện viên</h1>
+
+<div class="text-end mb-4">
+    <a asp-controller="User" asp-action="Trainer" class="btn btn-success shadow-sm">
+        <i class="bi bi-person-plus-fill me-1"></i>Thêm Huấn luyện viên
+    </a>
+</div>
+
+<!-- Bộ lọc -->
+<div class="card mb-4 border-info shadow-sm">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-filter-circle-fill me-2"></i>Bộ lọc tìm kiếm</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light btn-sm" type="submit" form="filterForm">
+                <i class="bi bi-search me-1"></i> Lọc
+            </button>
+            <a href="@Url.Action("Index")" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-x-circle me-1"></i> Reset
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="filterForm" method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-person-fill me-1"></i>Tên HLV</label>
+                <input type="text" name="name" value="@Context.Request.Query["name"]" class="form-control" placeholder="Nhập tên..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-telephone-fill me-1"></i>Số điện thoại</label>
+                <input type="text" name="phone" value="@Context.Request.Query["phone"]" class="form-control" placeholder="Nhập SĐT..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-star-fill me-1"></i>Chuyên môn</label>
+                <input type="text" name="specialty" value="@Context.Request.Query["specialty"]" class="form-control" placeholder="VD: Yoga, Gym..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-gender-ambiguous me-1"></i>Giới tính</label>
+                <select name="gender" class="form-select">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="Nam" @@(Context.Request.Query["gender"] == "Nam" ? "selected" : null)>Nam</option>
+                    <option value="Nữ" @@(Context.Request.Query["gender"] == "Nữ" ? "selected" : null)>Nữ</option>
+                    <option value="Khác" @@(Context.Request.Query["gender"] == "Khác" ? "selected" : null)>Khác</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Danh sách Trainer -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var trainer in Model)
+    {
+        <div class="col">
+            <div class="card trainer-card h-100 border-0 rounded-3 shadow-sm">
+                <img src="@(string.IsNullOrEmpty(trainer.Image) ? defaultAvatar : trainer.Image)"
+                     class="card-img-top avatar-img"
+                     alt="@trainer.FullName" />
+
+                <div class="card-body">
+                    <!-- TÊN TRUNG TÂM -->
+                    <h5 class="text-center mb-3 text-primary fw-bold">
+                        <i class="bi bi-person-circle me-1"></i>@trainer.FullName
+                    </h5>
+
+                    <p class="mb-1">
+                        <strong><i class="bi bi-gender-ambiguous me-1"></i>Giới tính:</strong>
+                        @{
+                            string genderText = trainer.Gender switch
+                            {
+                                true => "Nam",
+                                false => "Nữ",
+                                _ => "Khác"
+                            };
+                        }
+                        @genderText
+                    </p>
+                    <p class="mb-1"><strong><i class="bi bi-phone-fill me-1"></i>SĐT:</strong> @trainer.Phone</p>
+                    <p class="mb-1"><strong><i class="bi bi-star-fill me-1"></i>Chuyên môn:</strong> @trainer.Specialty</p>
+                    <p><strong><i class="bi bi-calendar-week me-1"></i>Lịch chú thích:</strong> @trainer.ScheduleNote</p>
+                </div>
+
+                <!-- Nút hành động -->
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Details" asp-route-id="@trainer.TrainerId" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye-fill me-1"></i>Xem
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@trainer.TrainerId" class="btn btn-outline-dark btn-sm">
+                            <i class="bi bi-pencil-fill me-1"></i>Sửa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

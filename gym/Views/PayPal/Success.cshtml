@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+<div class="container text-center mt-5">
+    <div class="card shadow p-4 rounded-4">
+        <div class="text-success">
+            <i class="bi bi-check-circle-fill" style="font-size: 5rem;"></i>
+        </div>
+        <h2 class="mt-3 fw-bold">Thanh toán thành công!</h2>
+        <p class="lead">Cảm ơn bạn đã thanh toán gói dịch vụ của chúng tôi.</p>
+
+        <div class="alert alert-success mt-3">
+            <strong>Phương thức:</strong> PayPal<br />
+            <strong>Mã giao dịch:</strong> @ViewBag.PaymentId<br />
+            <strong>Trạng thái:</strong> Đã thanh toán
+        </div>
+
+        <a href="/" class="btn btn-primary mt-3">Về trang chủ</a>
+    </div>
+</div>

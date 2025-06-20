@@ -1,0 +1,37 @@
+﻿@model gym.ViewModels.CreateMemberViewModel
+@{
+    ViewData["Title"] = "Thêm hội viên mới";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3 text-danger">Tạo tài khoản hội viên</h2>
+    <form asp-action="Member" method="post" class="shadow p-4 rounded bg-light">
+        <partial name="_UserFormMember" />
+        <hr />
+        <div class="mb-3">
+            <label asp-for="MemberFullName" class="form-label">Họ tên</label>
+            <input asp-for="MemberFullName" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="DateOfBirth" class="form-label">Ngày sinh</label>
+            <input asp-for="DateOfBirth" type="date" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Sex" class="form-label">Giới tính</label>
+            <select asp-for="Sex" class="form-select">
+                <option value="true">Nam</option>
+                <option value="false">Nữ</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MemberPhone" class="form-label">Số điện thoại</label>
+            <input asp-for="MemberPhone" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="MemberAddress" class="form-label">Địa chỉ</label>
+            <input asp-for="MemberAddress" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Tạo hội viên</button>
+    </form>
+</div>
+<partial name="_PasswordScript" />

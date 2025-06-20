@@ -1,0 +1,154 @@
+﻿@model NotificationCreateViewModel
+
+@{
+    ViewData["Title"] = "Gửi thông báo đến người dùng";
+}
+
+<h2 class="mb-4">📣 Gửi thông báo</h2>
+
+<form asp-action="Create" method="post" class="card shadow p-4 border-0">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label fw-bold">Tiêu đề</label>
+        <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề thông báo..." />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label fw-bold">Nội dung</label>
+        <textarea asp-for="Content" class="form-control" rows="4" placeholder="Nhập nội dung thông báo..."></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Chọn vai trò gửi thông báo:</label>
+        <div class="form-check">
+            <input class="form-check-input sendRoleCheck" type="checkbox" value="2" id="roleMember" />
+            <label class="form-check-label" for="roleMember">👤 Member</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input sendRoleCheck" type="checkbox" value="3" id="roleStaff" />
+            <label class="form-check-label" for="roleStaff">🧑‍💼 Staff</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input sendRoleCheck" type="checkbox" value="4" id="roleTrainer" />
+            <label class="form-check-label" for="roleTrainer">🏋️ Trainer</label>
+        </div>
+
+        <input type="hidden" asp-for="SendRole" id="sendRole" />
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Danh sách người nhận</label>
+        <div class="table-responsive border rounded">
+            <table class="table table-hover align-middle mb-0" id="userTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">Chọn</th>
+                        <th>Mã</th>
+                        <th>UserName</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Users.Count; i++)
+                    {
+                        <tr data-role="@Model.Users[i].RoleId">
+                            <td>
+                                <input type="checkbox" asp-for="Users[@i].IsSelected" class="form-check-input" />
+                                <input type="hidden" asp-for="Users[@i].UserId" />
+                                <input type="hidden" asp-for="Users[@i].RoleId" />
+                                <input type="hidden" asp-for="Users[@i].UserName" />
+                                <input type="hidden" asp-for="Users[@i].FullName" />
+                                <input type="hidden" asp-for="Users[@i].Email" />
+                            </td>
+                            <td>@Model.Users[i].UserId</td>
+                            <td>@Model.Users[i].UserName</td>
+                            <td>@Model.Users[i].FullName</td>
+                            <td>@Model.Users[i].Email</td>
+                            <td>
+                                @switch (Model.Users[i].RoleId)
+                                {
+                                    case 2:
+                                        <text>👤 Member</text>
+                                        ; break;
+                                    case 3:
+
+                                        <text>🧑‍💼 Staff</text>
+                                        ; break;
+                                    case 4:
+
+                                        <text>🏋️ Trainer</text>
+                                        ; break;
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+        <button type="submit" class="btn btn-success px-4">
+            <i class="bi bi-send-check-fill"></i> Gửi thông báo
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('sendRole').addEventListener('change', function () {
+            const selectedRole = this.value;
+            const rows = document.querySelectorAll("#userTable tbody tr");
+
+            rows.forEach(row => {
+                const roleId = row.getAttribute("data-role");
+                const checkbox = row.querySelector("input[type='checkbox']");
+
+                if (selectedRole === "" || roleId === selectedRole) {
+                    checkbox.checked = true;
+                } else {
+                    checkbox.checked = false;
+                }
+            });
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+<script>
+    document.querySelectorAll(".sendRoleCheck").forEach(cb => {
+        cb.addEventListener("change", function () {
+            const checked = Array.from(document.querySelectorAll(".sendRoleCheck:checked"))
+                .map(x => x.value);
+
+            const sendRoleInput = document.getElementById("sendRole");
+            if (checked.length === 1) {
+                sendRoleInput.value = checked[0];
+            } else {
+                sendRoleInput.value = "";
+            }
+
+            // Cập nhật checkbox người dùng trong bảng
+            const rows = document.querySelectorAll("#userTable tbody tr");
+            rows.forEach(row => {
+                const roleId = row.getAttribute("data-role");
+                const checkbox = row.querySelector("input[type='checkbox']");
+                checkbox.checked = checked.includes(roleId);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,35 @@
+﻿@model OtpVerificationDto
+@{
+    ViewData["Title"] = "Xác nhận mã OTP";
+}
+
+<div class="container mt-5" style="max-width: 500px">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title text-center text-primary mb-4">Xác nhận đăng ký tài khoản</h3>
+            <p class="text-center">Chúng tôi đã gửi mã OTP đến email <strong>@Model.Email</strong>. Vui lòng nhập mã OTP để hoàn tất đăng ký.</p>
+
+            <form asp-action="VerifyOtp" method="post">
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" readonly />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="OtpCode" class="form-label">Mã OTP</label>
+                    <input asp-for="OtpCode" class="form-control text-center" maxlength="6" autocomplete="off" placeholder="Nhập mã OTP..." required />
+                    <span asp-validation-for="OtpCode" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

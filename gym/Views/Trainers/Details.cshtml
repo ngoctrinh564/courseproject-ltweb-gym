@@ -1,0 +1,94 @@
+﻿@model gym.Data.Trainer
+
+@{
+    ViewData["Title"] = "Chi tiết Huấn luyện viên";
+    var user = Context.User;
+    var isAdmin = user.IsInRole("Admin");
+    Layout = isAdmin ? "~/Views/Shared/_AdminLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
+    string defaultAvatar = "/images/avt-default.png";
+}
+
+<style>
+    .detail-card {
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+        .detail-card img {
+            height: 320px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .detail-card .card-body h3 {
+            font-weight: bold;
+        }
+
+        .detail-card .info-item {
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+
+    .btn-back-edit {
+        max-width: 700px;
+        margin: 1.5rem auto 0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+</style>
+
+    <div class="card detail-card">
+        <img src="/@(string.IsNullOrEmpty(Model.Image) ? Url.Content("images/trainer/avt-default.jpg") : Url.Content(Model.Image))"
+             alt="@Model.FullName"
+            class="w-100"
+             style="height: 320px; object-fit: cover;" />
+
+
+    <div class="card-body">
+        <h3 class="text-center text-primary mb-4">
+            <i class="bi bi-person-circle me-2"></i>@Model.FullName
+        </h3>
+
+        <div class="info-item">
+            <i class="bi bi-gender-ambiguous me-2"></i>
+            <strong>Giới tính:</strong>
+            @{
+                var genderText = Model.Gender switch
+                {
+                    true => "Nam",
+                    false => "Nữ",
+                    _ => "Khác"
+                };
+            }
+            @genderText
+        </div>
+
+        <div class="info-item">
+            <i class="bi bi-phone-fill me-2"></i>
+            <strong>SĐT:</strong> @Model.Phone
+        </div>
+
+        <div class="info-item">
+            <i class="bi bi-star-fill me-2"></i>
+            <strong>Chuyên môn:</strong> @Model.Specialty
+        </div>
+
+        <div class="info-item">
+            <i class="bi bi-calendar-week me-2"></i>
+            <strong>Ghi chú lịch:</strong> @Model.ScheduleNote
+        </div>
+    </div>
+</div>
+
+<div class="btn-back-edit">
+    <a asp-action="Edit" asp-route-id="@Model.TrainerId" class="btn btn-outline-secondary">
+        <i class="bi bi-pencil-fill me-1"></i>Chỉnh sửa
+    </a>
+    <a asp-action="Index" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left-circle me-1"></i>Quay lại
+    </a>
+</div>

@@ -1,0 +1,19 @@
+﻿@model gym.ViewModels.CreateTrainerViewModel
+<div class="mb-3">
+    <label asp-for="UserName" class="form-label">Tên đăng nhập</label>
+    <input asp-for="UserName" class="form-control" />
+    <span asp-validation-for="UserName" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Password" class="form-label">Mật khẩu</label>
+    <div class="input-group">
+        <input asp-for="Password" class="form-control" id="passwordInput" />
+        <button type="button" class="btn btn-outline-secondary" onclick="generatePassword()">Random</button>
+    </div>
+    <span asp-validation-for="Password" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Email" class="form-label">Email đăng nhập</label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>

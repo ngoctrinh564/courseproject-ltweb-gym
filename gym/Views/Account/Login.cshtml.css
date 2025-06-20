@@ -1,0 +1,31 @@
+﻿.login-wrapper {
+    background: linear-gradient(135deg, #cbe7ff 0%, #eaf4ff 100%);
+    padding: 40px 0;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0a58ca;
+        transform: scale(1.03);
+    }
+
+@media (max-width: 576px) {
+    .card {
+        padding: 20px;
+    }
+}

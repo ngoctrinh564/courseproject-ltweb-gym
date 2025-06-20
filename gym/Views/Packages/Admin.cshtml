@@ -1,0 +1,111 @@
+﻿@model IEnumerable<gym.Data.Package>
+
+@{
+    ViewData["Title"] = "Quản lý Gói Tập";
+
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else if (User.IsInRole("Staff"))
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<h2 class="mb-4 fw-bold text-primary">📦 Quản lý Gói Tập</h2>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-success shadow-sm" asp-action="Create">
+        <i class="fas fa-plus me-1"></i> Tạo gói mới
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle shadow-sm">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>Tên</th>
+                <th>Loại</th>
+                <th>Giá</th>
+                <th>Thời hạn</th>
+                <th style="min-width:200px;">Mô tả</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                string rowClass = item.IsActive ? "table-light" : "table-secondary text-white";
+                <tr class="@rowClass" data-package-id="@item.PackageId">
+                    <td class="fw-semibold">@item.Name</td>
+                    <td>@item.Type</td>
+                    <td>@item.Price?.ToString("N0") VNĐ</td>
+                    <td class="text-center">@item.DurationInDays ngày</td>
+                    <td>@item.Description</td>
+                    <td class="text-center">
+                        <div class="d-flex flex-column align-items-center">
+                            <select class="form-select form-select-sm status-dropdown w-auto" data-id="@item.PackageId"
+                                    style="min-width: 100px; border-radius: 0.5rem;">
+                                <option value="true" selected="@(item.IsActive ? "selected" : null)">Mở</option>
+                                <option value="false" selected="@(item.IsActive ? null : "selected")">Đóng</option>
+                            </select>
+                            <span class="badge mt-2 status-label @(item.IsActive ? "bg-success" : "bg-danger")"
+                                  style="font-size: 0.8rem;">
+                                @(item.IsActive ? "Đang mở" : "Đã đóng")
+                            </span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-route-id="@item.PackageId" class="text-warning me-2" title="Sửa">
+                            <i class="fas fa-pen-to-square fa-lg"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.PackageId" class="text-info" title="Chi tiết">
+                            <i class="fas fa-circle-info fa-lg"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.status-dropdown').change(function () {
+                var select = $(this);
+                var isActive = select.val();
+                var packageId = select.data('id');
+                var row = select.closest('tr');
+                var label = row.find('.status-label');
+
+                $.ajax({
+                    url: '@Url.Action("UpdatePackageStatus", "Packages")',
+                    type: 'POST',
+                    data: {
+                        id: packageId,
+                        isActive: isActive
+                    },
+                    success: function () {
+                        if (isActive === "true") {
+                            row.removeClass("table-secondary text-white").addClass("table-light");
+                            label.removeClass("bg-danger").addClass("bg-success").text("Đang mở");
+                        } else {
+                            row.removeClass("table-light").addClass("table-secondary text-white");
+                            label.removeClass("bg-success").addClass("bg-danger").text("Đã đóng");
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Cập nhật trạng thái thất bại: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}

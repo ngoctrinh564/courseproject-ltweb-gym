@@ -1,0 +1,140 @@
+﻿@model IEnumerable<gym.Data.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Render token đúng để dùng trong AJAX -->
+<form id="token-form">@Html.AntiForgeryToken()</form>
+
+<h1 class="mb-4 text-center">Danh sách người dùng</h1>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="bi bi-funnel-fill me-2"></i>Bộ lọc tìm kiếm
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Tên đăng nhập</label>
+                <input type="text" name="userName" value="@Context.Request.Query["userName"]" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Email</label>
+                <input type="text" name="email" value="@Context.Request.Query["email"]" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Trạng thái</label>
+                <select name="status" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="Hoạt động" @@(Context.Request.Query["status"]= ="Hoạt động" ? "selected" : "" )>Hoạt động</option>
+                    <option value="Vô hiệu hóa" @@(Context.Request.Query["status"]= ="Vô hiệu hóa" ? "selected" : "" )>Vô hiệu hóa</option>
+                </select>
+
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Vai trò</label>
+                <select name="roleId" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    @foreach (var role in ViewBag.Roles as SelectList)
+                    {
+                        <option value="@role.Value" @@(ViewBag.SelectedRoleId?.ToString() == role.Value ? "selected" : "")>@role.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-12 text-end">
+                <button type="submit" class="btn btn-success me-2">🔍 Lọc</button>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">🗑️ Đặt lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-hover table-bordered shadow-sm align-middle">
+    <thead class="table-primary text-center">
+        <tr>
+            <th>Tên đăng nhập</th>
+            <th>Email</th>
+            <th>Ref ID</th>
+            <th>Trạng thái</th>
+            <th>Kích hoạt</th>
+            <th>Vai trò</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.UserName</td>
+                <td>@item.Email</td>
+                <td class="text-center">@item.ReferenceId</td>
+                <td class="text-center">
+                    @{
+                        var badgeColor = item.IsAtive == true ? "#28a745" : "#ffc107"; // xanh lá hoặc vàng
+                        var textColor = item.IsAtive == true ? "text-white" : "text-dark"; // chữ trắng hoặc đen tùy màu nền
+                    }
+                    <span class="badge rounded-pill px-3 py-2 @textColor" style="background-color: @badgeColor;">
+                        @item.Status
+                    </span>
+                </td>
+                <td class="text-center">
+                    <select class="form-select form-select-sm w-auto d-inline is-active-dropdown"
+                            data-user-id="@item.UserId"
+                            data-value="@item.IsAtive">
+                        <option value="true">✅ Kích hoạt</option>
+                        <option value="false">❌ Vô hiệu hóa</option>
+                    </select>
+                </td>
+                <td class="text-center">@item.Role?.RoleName</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-secondary btn-sm">✏️ Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-info btn-sm">👁️ Xem</a>
+                    @* <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-danger btn-sm">🗑️ Xoá</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        // Set selected option theo data-value
+        document.querySelectorAll('.is-active-dropdown').forEach(select => {
+            const value = select.dataset.value;
+            if (value !== null && value !== undefined) {
+                select.value = value.toLowerCase();
+            }
+
+            select.addEventListener('change', function () {
+                const userId = this.dataset.userId;
+                const isActive = this.value;
+
+                console.log("Gửi:", userId, isActive);
+
+                fetch('/Users/UpdateIsActive', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: `userId=${userId}&isActive=${isActive}`
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert("✔️ Cập nhật thành công")
+                        // 🔄 Reload lại trang sau khi cập nhật thành công
+                        location.reload();
+                    } else {
+                        alert("❌ Có lỗi xảy ra (status " + res.status + ")");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("⚠️ Lỗi kết nối");
+                });
+            });
+        });
+    </script>
+}

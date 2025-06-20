@@ -1,0 +1,169 @@
+﻿@model dynamic
+
+@{
+    var currentProvince = TempData["CurrentProvince"]?.ToString();
+    var currentDistrict = TempData["CurrentDistrict"]?.ToString();
+    var currentWard = TempData["CurrentWard"]?.ToString();
+}
+
+<div class="address-selection">
+    <div class="form-group mb-3">
+        <label for="Province">Province/City</label>
+        <select id="Province" name="Province" class="form-control" required data-current="@currentProvince">
+            <option value="">Select Province/City</option>
+        </select>
+        <div class="invalid-feedback">Please select Province/City</div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="District">District</label>
+        <select id="District" name="District" class="form-control" required disabled data-current="@currentDistrict">
+            <option value="">Select District</option>
+        </select>
+        <div class="invalid-feedback">Please select District</div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="Ward">Ward/Commune</label>
+        <select id="Ward" name="Ward" class="form-control" required disabled data-current="@currentWard">
+            <option value="">Select Ward/Commune</option>
+        </select>
+        <div class="invalid-feedback">Please select Ward/Commune</div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="StreetAddress">Specific Address</label>
+        <input id="StreetAddress" name="StreetAddress" class="form-control" required
+               placeholder="House number, street name..." value="@Model?.StreetAddress" />
+        <div class="invalid-feedback">Please enter specific address</div>
+    </div>
+
+    <input type="hidden" id="FullAddress" name="Address" />
+    <input type="hidden" id="ProvinceId" name="ProvinceId" />
+    <input type="hidden" id="DistrictId" name="DistrictId" />
+    <input type="hidden" id="WardId" name="WardId" />
+</div>
+
+<script>
+    window.initializeAddressSelection = function() {
+        console.log("initializeAddressSelection called");
+
+        $.getJSON("https://provinces.open-api.vn/api/p/", function (data) {
+            var options = '<option value="">Select Province/City</option>';
+            var currentProvince = $("#Province").data("current");
+            console.log("currentProvince:", currentProvince);
+
+            $.each(data, function (index, item) {
+                var selected = currentProvince && item.name === currentProvince ? 'selected' : '';
+                options += `<option value="${item.code}" ${selected}>${item.name}</option>`;
+                if (selected) {
+                    $("#ProvinceId").val(item.code);
+                }
+            });
+            $("#Province").html(options);
+
+            if (currentProvince) {
+                $("#Province").trigger('change');
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error loading provinces:", textStatus, errorThrown);
+        });
+
+        $("#Province").off('change').on('change', function () {
+            var provinceCode = $(this).val();
+            var provinceName = $("#Province option:selected").text();
+            console.log("Province changed:", provinceName, provinceCode);
+            $("#ProvinceId").val(provinceCode);
+
+            if (provinceCode) {
+                $("#District").prop('disabled', false);
+                $.getJSON("https://provinces.open-api.vn/api/p/" + provinceCode + "?depth=2", function (data) {
+                    var options = '<option value="">Select District</option>';
+                    var currentDistrict = $("#District").data("current");
+
+                    $.each(data.districts, function (index, item) {
+                        var selected = currentDistrict && item.name === currentDistrict ? 'selected' : '';
+                        options += `<option value="${item.code}" ${selected}>${item.name}</option>`;
+                        if (selected) {
+                            $("#DistrictId").val(item.code);
+                        }
+                    });
+                    $("#District").html(options);
+
+                    if (currentDistrict) {
+                        $("#District").trigger('change');
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error loading districts:", textStatus, errorThrown);
+                });
+            } else {
+                $("#District").prop('disabled', true).html('<option value="">Select District</option>');
+                $("#Ward").prop('disabled', true).html('<option value="">Select Ward/Commune</option>');
+            }
+            updateFullAddress();
+        });
+
+        $("#District").off('change').on('change', function () {
+            var districtCode = $(this).val();
+            var districtName = $("#District option:selected").text();
+            console.log("District changed:", districtName, districtCode);
+            $("#DistrictId").val(districtCode);
+
+            if (districtCode) {
+                $("#Ward").prop('disabled', false);
+                $.getJSON("https://provinces.open-api.vn/api/d/" + districtCode + "?depth=2", function (data) {
+                    var options = '<option value="">Select Ward/Commune</option>';
+                    var currentWard = $("#Ward").data("current");
+
+                    $.each(data.wards, function (index, item) {
+                        var selected = currentWard && item.name === currentWard ? 'selected' : '';
+                        options += `<option value="${item.code}" ${selected}>${item.name}</option>`;
+                        if (selected) {
+                            $("#WardId").val(item.code);
+                        }
+                    });
+                    $("#Ward").html(options);
+
+                    if (currentWard) {
+                        $("#Ward").trigger('change');
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error loading wards:", textStatus, errorThrown);
+                });
+            } else {
+                $("#Ward").prop('disabled', true).html('<option value="">Select Ward/Commune</option>');
+            }
+            updateFullAddress();
+        });
+
+        $("#Ward").off('change').on('change', function () {
+            var wardCode = $(this).val();
+            var wardName = $("#Ward option:selected").text();
+            console.log("Ward changed:", wardName, wardCode);
+            $("#WardId").val(wardCode);
+            updateFullAddress();
+        });
+
+        $("#StreetAddress").off('change input').on('change input', function () {
+            updateFullAddress();
+        });
+
+        if ($("#StreetAddress").val()) {
+            updateFullAddress();
+        }
+    };
+
+    function updateFullAddress() {
+        var streetAddress = $("#StreetAddress").val();
+        var ward = $("#Ward option:selected").text();
+        var district = $("#District option:selected").text();
+        var province = $("#Province option:selected").text();
+
+        var parts = [streetAddress, ward, district, province].filter(function (part) {
+            return part && part !== 'Select Ward/Commune' && part !== 'Select District' && part !== 'Select Province/City';
+        });
+
+        $("#FullAddress").val(parts.join(", "));
+        console.log("Full address updated:", parts.join(", "));
+    }
+</script>

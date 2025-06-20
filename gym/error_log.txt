@@ -1,0 +1,2 @@
+System.Exception: Không tìm thấy thành viên với số điện thoại haine
+   at gym.Controllers.PackagesController.Register(Int32 packageId) in D:\MON_HOC\lap-trinh-web\doan\gym\gym\Controllers\PackagesController.cs:line 180

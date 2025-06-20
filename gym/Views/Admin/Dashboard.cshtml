@@ -1,0 +1,539 @@
+﻿@model AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Gym Management Dashboard</h1>
+        <p class="dashboard-subtitle">Tổng quan quản lý phòng gym</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card members">
+            <div class="stat-header">
+                <div class="stat-icon members">👥</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.TotalMembers</div>
+                    <div class="stat-label">Tổng thành viên</div>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <small>@Model.Dashboard.ActiveMembers thành viên đang hoạt động</small>
+            </div>
+        </div>
+
+        <div class="stat-card revenue">
+            <div class="stat-header">
+                <div class="stat-icon revenue">💰</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.MonthlyRevenue.ToString("N0") đ</div>
+                    <div class="stat-label">Doanh thu tháng</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card payments">
+            <div class="stat-header">
+                <div class="stat-icon payments">⏳</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.PendingPayments</div>
+                    <div class="stat-label">Thanh toán chờ xử lý</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card packages">
+            <div class="stat-header">
+                <div class="stat-icon packages">📦</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.ActivePackages</div>
+                    <div class="stat-label">Gói tập đang hoạt động</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card schedules">
+            <div class="stat-header">
+                <div class="stat-icon schedules">📅</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.ScheduledClasses</div>
+                    <div class="stat-label">Lịch tập hôm nay</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card notifications">
+            <div class="stat-header">
+                <div class="stat-icon notifications">🔔</div>
+                <div class="stat-details">
+                    <div class="stat-value">@Model.Dashboard.Notifications</div>
+                    <div class="stat-label">Thông báo chưa đọc</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+        <!-- Revenue Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">Biểu đồ doanh thu 6 tháng đầu năm</h3>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Package Distribution Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">Phân bố gói tập</h3>
+            <div class="chart-container">
+                <canvas id="packageChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-section">
+        <!-- Member Growth Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">Tăng trưởng thành viên theo tuần</h3>
+            <div class="chart-container member-growth-chart">
+                <canvas id="memberGrowthChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="activity-card">
+            <h3 class="chart-title">Hoạt động gần đây</h3>
+            <div class="activities-list">
+                @foreach (var activity in Model.RecentActivities)
+                {
+                    <div class="activity-item">
+                        <div class="activity-icon @activity.Color">
+                            @switch (activity.Type)
+                            {
+                                case "new_member":
+                                    <span>👤</span>
+                                    break;
+                                case "payment":
+                                    <span>💳</span>
+                                    break;
+                                case "schedule":
+                                    <span>📋</span>
+                                    break;
+                                case "expiring":
+                                    <span>⚠️</span>
+                                    break;
+                                default:
+                                    <span>📝</span>
+                                    break;
+                            }
+                        </div>
+                        <div class="activity-content">
+                            <h4>@activity.Title</h4>
+                            <p>@activity.Description</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 5px solid;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.members {
+            border-left-color: #3B82F6;
+        }
+
+        .stat-card.revenue {
+            border-left-color: #10B981;
+        }
+
+        .stat-card.payments {
+            border-left-color: #F59E0B;
+        }
+
+        .stat-card.packages {
+            border-left-color: #EF4444;
+        }
+
+        .stat-card.schedules {
+            border-left-color: #8B5CF6;
+        }
+
+        .stat-card.notifications {
+            border-left-color: #06B6D4;
+        }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+        .stat-icon.members {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        }
+
+        .stat-icon.revenue {
+            background: linear-gradient(135deg, #10B981, #059669);
+        }
+
+        .stat-icon.payments {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+
+        .stat-icon.packages {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+
+        .stat-icon.schedules {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        .stat-icon.notifications {
+            background: linear-gradient(135deg, #06B6D4, #0891B2);
+        }
+
+    .stat-details {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 5px;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: #6B7280;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .stat-footer {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #E5E7EB;
+    }
+
+        .stat-footer small {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+        }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .chart-card, .activity-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    .bottom-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        transition: background-color 0.3s ease;
+    }
+
+        .activity-item:hover {
+            background-color: #F9FAFB;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .activity-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+        .activity-icon.blue {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        }
+
+        .activity-icon.green {
+            background: linear-gradient(135deg, #10B981, #059669);
+        }
+
+        .activity-icon.purple {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        .activity-icon.red {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+
+    .activity-content h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 5px;
+    }
+
+    .activity-content p {
+        color: #6B7280;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .member-growth-chart {
+        height: 250px;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1024px) {
+        .charts-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-section {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-container
+
+    {
+        padding: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Revenue Chart Data
+        const revenueData = @Html.Raw(Json.Serialize(Model.RevenueData));
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: revenueData.map(item => item.month),
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenueData.map(item => item.revenue),
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10B981',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 3,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Package Distribution Chart
+        const packageData = @Html.Raw(Json.Serialize(Model.PackageData));
+
+        const packageCtx = document.getElementById('packageChart').getContext('2d');
+        new Chart(packageCtx, {
+            type: 'doughnut',
+            data: {
+                labels: packageData.map(item => item.name),
+                datasets: [{
+                    data: packageData.map(item => item.value),
+                    backgroundColor: packageData.map(item => item.color),
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Member Growth Chart
+        const memberGrowthData = @Html.Raw(Json.Serialize(Model.MemberGrowthData));
+
+        const memberGrowthCtx = document.getElementById('memberGrowthChart').getContext('2d');
+        new Chart(memberGrowthCtx, {
+            type: 'bar',
+            data: {
+                labels: memberGrowthData.map(item => item.week),
+                datasets: [{
+                    label: 'Thành viên mới',
+                    data: memberGrowthData.map(item => item.members),
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: '#3B82F6',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

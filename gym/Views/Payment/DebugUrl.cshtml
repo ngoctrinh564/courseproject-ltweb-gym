@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Debug URL VNPay";
+}
+
+<h3 class="text-danger">🔎 Link VNPay bạn vừa tạo:</h3>
+
+@if (ViewBag.Url != null)
+{
+    <p class="text-break text-monospace">@ViewBag.Url</p>
+    <a class="btn btn-primary mt-3" href="@ViewBag.Url" target="_blank">🔗 Mở link thử</a>
+}
+else
+{
+    <p class="text-warning">Không có URL nào được tạo.</p>
+}

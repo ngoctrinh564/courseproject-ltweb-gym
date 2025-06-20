@@ -1,0 +1,41 @@
+﻿@using gym.ViewModels
+@model List<SentNotificationViewModel>
+
+@{
+    ViewData["Title"] = "Thông báo đã gửi";
+}
+
+<h2 class="mb-4">📨 Danh sách thông báo đã gửi</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chưa có thông báo nào được gửi.</div>
+}
+else
+{
+    <div class="table-responsive border rounded">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tiêu đề</th>
+                    <th>Nội dung</th>
+                    <th>Thời gian gửi</th>
+                    <th>UserName</th>
+                    <th>Họ tên</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Content</td>
+                        <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.UserName</td>
+                        <td>@item.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

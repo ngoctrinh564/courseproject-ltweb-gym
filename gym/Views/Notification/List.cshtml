@@ -1,0 +1,64 @@
+﻿@model List<gym.Data.UserNotification>
+@{
+    ViewData["Title"] = "Thông báo";
+}
+
+<h2 class="text-primary mb-4"><i class="bi bi-bell-fill me-2"></i>Thông báo của bạn</h2>
+
+<div class="list-group shadow-sm">
+    @foreach (var item in Model)
+    {
+        var isUnread = item.Seen == false;
+        <div class="notification-item list-group-item list-group-item-action mb-3 p-3 rounded position-relative @(isUnread ? "bg-light border border-primary" : "border")"
+             data-id="@item.NotificationId"
+             style="cursor: pointer;">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="fw-semibold fs-6 @(isUnread ? "text-dark" : "text-secondary")">
+                    <i class="bi bi-chat-left-text me-2 text-primary"></i>@item.Notification.Title
+                </div>
+                <small class="text-muted">@item.TimeSend?.ToString("HH:mm dd/MM/yyyy")</small>
+            </div>
+            <div class="text-secondary small text-truncate">@item.Notification.Content</div>
+
+            @if (isUnread)
+            {
+                <span class="position-absolute top-0 start-0 translate-middle p-1 bg-success border border-white rounded-circle"></span>
+            }
+        </div>
+    }
+</div>
+
+<!-- Offcanvas chi tiết -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="notificationOffcanvas">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title"><i class="bi bi-info-circle-fill text-primary me-2"></i>Chi tiết thông báo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body" id="notificationContent" style="overflow-y: auto;">
+        <!-- AJAX sẽ đổ nội dung vào đây -->
+        <div class="text-center text-muted mt-5">Đang tải nội dung...</div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".notification-item").click(function () {
+                const id = $(this).data("id");
+
+                // Hiệu ứng loading
+                $("#notificationContent").html('<div class="text-center text-muted my-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2">Đang tải...</div></div>');
+
+                $.post(`/Notification/MarkAsSeen`, { id: id }, function (html) {
+                    $("#notificationContent").html(html);
+                    const canvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('notificationOffcanvas'));
+                    canvas.show();
+                });
+            });
+
+            // Reload lại trang khi offcanvas đóng để cập nhật trạng thái
+            document.getElementById('notificationOffcanvas').addEventListener('hidden.bs.offcanvas', function () {
+                location.reload();
+            });
+        });
+    </script>
+}

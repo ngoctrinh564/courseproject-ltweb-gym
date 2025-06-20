@@ -1,0 +1,102 @@
+﻿@model IEnumerable<gym.Data.Member>
+
+@{
+    ViewData["Title"] = "Danh sách Hội viên";
+    var user = Context.User;
+    var isAdmin = user.IsInRole("Admin"); // hoặc kiểm tra roleId nếu bạn lưu claim roleId
+    Layout = isAdmin ? "~/Views/Shared/_AdminLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mb-4 text-center">Danh sách Hội viên</h1>
+
+<div class="text-end mb-4">
+    <a asp-controller="User" asp-action="Member" class="btn btn-primary">➕ Thêm Hội viên</a>
+</div>
+
+
+<!-- FORM LỌC -->
+<div class="card mb-4 border-primary shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-funnel-fill me-2"></i>Bộ lọc tìm kiếm</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light btn-sm" type="submit" form="filterForm">
+                <i class="bi bi-search me-1"></i> Lọc
+            </button>
+            <a href="@Url.Action("Index")" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-x-circle me-1"></i> Reset
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="filterForm" method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-person-fill me-1"></i>Tên</label>
+                <input type="text" name="name" value="@Context.Request.Query["name"]" class="form-control" placeholder="Nhập tên..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-telephone-fill me-1"></i>SĐT</label>
+                <input type="text" name="phone" value="@Context.Request.Query["phone"]" class="form-control" placeholder="Nhập số điện thoại..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-geo-alt-fill me-1"></i>Địa chỉ</label>
+                <input type="text" name="address" value="@Context.Request.Query["address"]" class="form-control" placeholder="Nhập địa chỉ..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="bi bi-gender-ambiguous me-1"></i>Giới tính</label>
+                <select name="sex" class="form-select">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="Nam" @@(Context.Request.Query["sex"] == "Nam" ? "selected" : "")>Nam</option>
+                    <option value="Nữ" @@(Context.Request.Query["sex"] == "Nữ" ? "selected" : "")>Nữ</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- BẢNG HIỂN THỊ MEMBER -->
+<table class="table table-hover table-striped align-middle shadow-sm">
+    <thead class="table-primary">
+        <tr>
+            <th>#</th>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Giới tính</th>
+            <th>SĐT</th>
+            <th>Địa chỉ</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @{
+        int stt = 1;
+        foreach (var m in Model)
+        {
+            <tr>
+                <td>@stt</td>
+                <td>@m.FullName</td>
+                <td>@(m.DateOfBirth?.ToString("dd/MM/yyyy") ?? "-")</td>
+                <td>
+                    @{
+                        var genderText = m.Sex switch
+                        {
+                            true => "Nam",
+                            false => "Nữ",
+                            _ => "-"
+                        };
+                    }
+                    @genderText
+                </td>
+                <td>@m.Phone</td>
+                <td>@m.Address</td>
+                <td>@(m.CreateDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@m.MemberId" class="btn btn-outline-info btn-sm">👁️ Xem</a>
+                    <a asp-action="Edit" asp-route-id="@m.MemberId" class="btn btn-outline-secondary btn-sm">✏️ Sửa</a>
+                </td>
+            </tr>
+            stt++;
+        }
+    }
+    </tbody>
+</table>

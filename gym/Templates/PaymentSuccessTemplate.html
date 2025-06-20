@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán thành công</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f6f9fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 20px 30px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+        .content {
+            padding: 30px;
+            color: #333;
+        }
+
+            .content h2 {
+                font-size: 20px;
+                margin-top: 0;
+            }
+
+        .info-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+            .info-table td {
+                padding: 10px 5px;
+                border-bottom: 1px solid #eee;
+            }
+
+                .info-table td.label {
+                    font-weight: bold;
+                    width: 35%;
+                    color: #555;
+                }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 20px 30px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+            .footer p {
+                margin: 0;
+            }
+
+        .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thanh Toán Thành Công</h1>
+        </div>
+        <div class="content">
+            <h2>Xin chào <span class="highlight">{{UserName}}</span>,</h2>
+            <p>Cảm ơn bạn đã sử dụng dịch vụ tại <strong>GYM Club</strong>. Chúng tôi xác nhận bạn đã thanh toán thành công với thông tin như sau:</p>
+
+            <table class="info-table">
+                <tr>
+                    <td class="label">Mã giao dịch:</td>
+                    <td>{{PaymentId}}</td>
+                </tr>
+                <tr>
+                    <td class="label">Số tiền:</td>
+                    <td>{{Amount}} VND</td>
+                </tr>
+                <tr>
+                    <td class="label">Thời gian:</td>
+                    <td>{{Date}}</td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 25px;">Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email hoặc hotline hỗ trợ.</p>
+        </div>
+        <div class="footer">
+            <p>Trân trọng,</p>
+            <p>Đội ngũ GYM Club</p>
+        </div>
+    </div>
+</body>
+</html>

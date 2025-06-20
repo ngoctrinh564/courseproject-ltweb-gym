@@ -1,0 +1,26 @@
+﻿@using System
+@model IEnumerable<gym.Data.TrainingSchedule>
+
+<h2>Lịch sử tập luyện</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ngày</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
+            <th>Ghi chú</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@(s.TrainingDate?.ToShortDateString() ?? "")</td>
+                <td>@s.StartTime</td>
+                <td>@s.EndTime</td>
+                <td>@s.Node</td>
+            </tr>
+        }
+    </tbody>
+</table>

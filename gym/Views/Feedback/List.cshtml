@@ -1,0 +1,54 @@
+﻿@using gym.ViewModels
+@model IEnumerable<FeedbackListViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách phản hồi";
+    var user = Context.User;
+    var isAdmin = user.IsInRole("Admin"); // hoặc kiểm tra roleId nếu bạn lưu claim roleId
+    Layout = isAdmin ? "~/Views/Shared/_AdminLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow rounded-4">
+        <div class="card-body p-4">
+            <h3 class="text-center text-primary mb-4">
+                <i class="bi bi-inbox-fill"></i> Danh sách phản hồi từ người dùng
+            </h3>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-emoji-smile"></i> Hiện tại chưa có phản hồi nào.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-person-fill"></i> Người phản hồi</th>
+                                <th><i class="bi bi-chat-left-text-fill"></i> Nội dung</th>
+                                <th><i class="bi bi-clock-fill"></i> Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.TenNguoiPhanHoi</td>
+                                    <td class="text-start">@item.NoiDung</td>
+                                    <td>@item.ThoiGian.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+}

@@ -1,0 +1,28 @@
+﻿@model gym.ViewModels.CreateStaffViewModel
+@{
+    ViewData["Title"] = "Thêm nhân viên mới";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<div class="container mt-4">
+    <h2 class="mb-3 text-primary">Tạo tài khoản nhân viên</h2>
+    <form asp-action="Staff" method="post" class="shadow p-4 rounded bg-light">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <partial name="_UserFormStaff" />
+        <hr />
+        <div class="mb-3">
+            <label asp-for="StaffFullName" class="form-label">Họ tên</label>
+            <input asp-for="StaffFullName" class="form-control" />
+            <span asp-validation-for="StaffFullName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="StaffPhone" class="form-label">Số điện thoại</label>
+            <input asp-for="StaffPhone" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="StaffEmail" class="form-label">Email cá nhân</label>
+            <input asp-for="StaffEmail" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Tạo nhân viên</button>
+    </form>
+</div>
+<partial name="_PasswordScript" />

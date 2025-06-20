@@ -1,0 +1,340 @@
+﻿@{
+    ViewData["Title"] = "Chat with AI";
+    var user = Context.User;
+    var isAdmin = user.IsInRole("Admin");
+    Layout = null;
+}
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: #f0f4f8;
+    }
+
+    .chat-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        padding: 0;
+        box-sizing: border-box;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .chat-header {
+        background: linear-gradient(to right, #007bff, #00aaff);
+        color: white;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header .title {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .chat-header .title h2 {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            .chat-header .title span {
+                font-size: 13px;
+                opacity: 0.9;
+            }
+
+    .chat-box {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        background: #f9fafb;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .message {
+        max-width: 75%;
+        padding: 12px 16px;
+        border-radius: 20px;
+        line-height: 1.6;
+        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+        .message.user {
+            align-self: flex-end;
+            background: #007bff;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: #e6eaf1;
+            color: #333;
+            border-bottom-left-radius: 6px;
+        }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin: 0 8px;
+        background-size: cover;
+        background-position: center;
+    }
+
+        .avatar.bot {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/4712/4712109.png');
+        }
+
+        .avatar.user {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1946/1946429.png');
+        }
+
+    .msg-row {
+        display: flex;
+        align-items: flex-end;
+        position: relative;
+    }
+
+        .msg-row.user {
+            justify-content: flex-end;
+        }
+
+        .msg-row.bot {
+            justify-content: flex-start;
+        }
+
+    .timestamp {
+        font-size: 10px;
+        color: #ddd;
+        margin-top: 4px;
+        text-align: right;
+    }
+
+    .message.bot .timestamp {
+        color: #999;
+    }
+
+    .input-area {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        background: #fff;
+        border-top: 1px solid #eee;
+    }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .input-area button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    .message-actions {
+        display: none;
+        position: absolute;
+        bottom: 4px;
+        right: 8px;
+    }
+
+    .message:hover .message-actions {
+        display: flex;
+    }
+
+    .message-actions button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #fff;
+        padding: 0;
+        margin-left: 6px;
+        opacity: 0.6;
+    }
+
+    .message.bot .message-actions button {
+        color: #666;
+    }
+
+    .message-actions button:hover {
+        opacity: 1;
+    }
+
+
+    .msg-row:hover .message-actions {
+        display: flex;
+    }
+
+    .message-actions button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .loading {
+        border: 3px solid #ccc;
+        border-top: 3px solid #007bff;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        margin-left: 8px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="AI logo">
+        <div class="title">
+            <h2>Chat AI Hỗ trợ</h2>
+            <span>Chào bạn! Tôi có thể giúp gì hôm nay?</span>
+        </div>
+    </div>
+
+    <div id="chatLog" class="chat-box"></div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nhập câu hỏi..." onkeydown="if(event.key === 'Enter') ask()" />
+        <button onclick="ask()">Gửi</button>
+    </div>
+</div>
+
+<audio id="sendSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_a7f4cfb1ed.mp3?filename=message-2-123105.mp3"></audio>
+<audio id="receiveSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_e0662b59d3.mp3?filename=message-pop-123106.mp3"></audio>
+
+<script>
+    const chatLog = document.getElementById("chatLog");
+    const sendSound = document.getElementById("sendSound");
+    const receiveSound = document.getElementById("receiveSound");
+
+    function appendMessage(text, sender) {
+        const row = document.createElement("div");
+        row.classList.add("msg-row", sender);
+
+        const avatar = document.createElement("div");
+        avatar.classList.add("avatar", sender);
+
+        const msg = document.createElement("div");
+        msg.classList.add("message", sender);
+
+        const content = document.createElement("span");
+        content.innerHTML = text;
+
+        const timestamp = document.createElement("div");
+        timestamp.className = "timestamp";
+        timestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const actions = document.createElement("div");
+        actions.className = "message-actions";
+        const copyBtn = document.createElement("button");
+        copyBtn.innerText = "📋";
+        copyBtn.title = "Copy";
+        copyBtn.onclick = () => navigator.clipboard.writeText(text);
+        actions.appendChild(copyBtn);
+
+        msg.appendChild(content);
+        msg.appendChild(actions);
+        msg.appendChild(timestamp);
+
+        if (sender === "user") {
+            row.appendChild(msg);
+            row.appendChild(avatar);
+            sendSound.play();
+        } else {
+            row.appendChild(avatar);
+            row.appendChild(msg);
+            receiveSound.play();
+        }
+
+        chatLog.appendChild(row);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    async function ask() {
+        const input = document.getElementById("userInput");
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        appendMessage(msg, "user");
+        input.value = "";
+
+        const loadingRow = document.createElement("div");
+        loadingRow.classList.add("msg-row", "bot");
+
+        const botAvatar = document.createElement("div");
+        botAvatar.classList.add("avatar", "bot");
+
+        const loadingBubble = document.createElement("div");
+        loadingBubble.classList.add("message", "bot");
+
+        const loadingSpinner = document.createElement("span");
+        loadingSpinner.classList.add("loading");
+
+        loadingBubble.appendChild(loadingSpinner);
+        loadingRow.appendChild(botAvatar);
+        loadingRow.appendChild(loadingBubble);
+        chatLog.appendChild(loadingRow);
+        chatLog.scrollTop = chatLog.scrollHeight;
+
+        try {
+            const res = await fetch("/Chat/Ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "message=" + encodeURIComponent(msg)
+            });
+
+            const data = await res.json();
+            loadingRow.remove();
+            appendMessage(data.response, "bot");
+
+        } catch (err) {
+            loadingRow.remove();
+            appendMessage("Đã xảy ra lỗi khi phản hồi!", "bot");
+            console.error(err);
+        }
+    }
+</script>

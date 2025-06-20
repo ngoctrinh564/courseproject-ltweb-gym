@@ -1,0 +1,57 @@
+﻿@model gym.Data.User
+
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4 text-primary fw-bold">👤 Chi tiết người dùng</h2>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-secondary fw-semibold">Tên đăng nhập</dt>
+            <dd class="col-sm-8">@Model.UserName</dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Mật khẩu</dt>
+            <dd class="col-sm-8">
+                <span class="text-muted">••••••••</span>
+                @* hoặc: @Model.Password nếu bạn muốn hiển thị thật *@
+            </dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Email</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Mã liên kết (ReferenceId)</dt>
+            <dd class="col-sm-8">@Model.ReferenceId</dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Trạng thái hệ thống</dt>
+            <dd class="col-sm-8">@Model.Status</dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Trạng thái hoạt động</dt>
+            <dd class="col-sm-8">
+                @if (Model.IsAtive == true)
+                {
+                    <span class="badge bg-success">Đang hoạt động</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Đã khóa</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4 text-secondary fw-semibold">Vai trò</dt>
+            <dd class="col-sm-8">@Model.Role?.RoleName</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+    </a>
+
+    <a asp-action="Edit" asp-route-id="@Model.UserId" class="btn btn-warning">
+        <i class="fas fa-pen-to-square me-1"></i> Sửa thông tin
+    </a>
+</div>

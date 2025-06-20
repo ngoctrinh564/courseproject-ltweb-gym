@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gym Club</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" />
+    <link href="/images/logo/logo.jpg" rel="icon" type="image/jpeg" />
+    <link href="/images/logo/logo.jpg" rel="shortcut icon" type="image/jpeg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/gym.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #0056b3;
+            --accent-color: #00c4b4;
+            --text-color: #212529;
+            --bg-color: #f8f9fa;
+            --footer-bg: #1a252f;
+            --footer-text: #adb5bd;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            transition: var(--transition);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #fff !important;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+            .navbar-brand:hover {
+                transform: scale(1.05);
+            }
+
+        .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+            .nav-link:hover {
+                color: var(--accent-color) !important;
+                transform: translateY(-2px);
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 50%;
+                background-color: var(--accent-color);
+                transition: var(--transition);
+                transform: translateX(-50%);
+            }
+
+            .nav-link:hover::after {
+                width: 50%;
+            }
+
+        .btn-link {
+            color: #fff !important;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+            .btn-link:hover {
+                color: var(--accent-color) !important;
+            }
+
+        .container-main {
+            flex: 1 0 auto;
+            padding: 2rem 0;
+            animation: fadeIn 0.5s ease-in;
+            overflow-y: auto;
+        }
+
+        .content-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 1rem 0;
+            transition: var(--transition);
+        }
+
+            .content-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+            }
+
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 1rem 0;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+            .footer a {
+                color: var(--footer-text);
+                text-decoration: none;
+                transition: var(--transition);
+            }
+
+                .footer a:hover {
+                    color: var(--accent-color);
+                }
+
+            .footer .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+        .social-icons a {
+            font-size: 1rem;
+            margin: 0 0.5rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        .nav-link.dropdown-toggle::after {
+            display: none;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .navbar-nav {
+                padding: 1rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 0;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            pointer-events: none; /* Tránh hover ảnh hưởng */
+        }
+
+        .modal.show .modal-dialog {
+            pointer-events: auto;
+        }
+        /* Tắt animation nếu cần */
+        .modal.fade .modal-dialog {
+            transition: none !important;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    @section Scripts {
+        <script>
+            $(function () {
+                let modalInstance;
+
+                $(document).on("click", ".notification-item", function () {
+                    const id = $(this).data("id");
+
+                    // Chỉ gọi 1 lần, tránh nhiều click giật lag
+                    $.post("/Notification/MarkAsSeen", { id }, function (html) {
+                        $("#notificationModalContent").html(html);
+
+                        // Không tạo mới nếu đã có modal instance
+                        const modalEl = document.getElementById("notificationModal");
+                        modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+                        // Show nhẹ nhàng sau khi DOM sẵn sàng
+                        setTimeout(() => {
+                            modalInstance.show();
+                        }, 10);
+                    });
+                });
+            });
+        </script>
+    }
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-dumbbell me-2"></i>Gym Club
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-2"></i>Trang chủ
+                            </a>
+                        </li>
+                        @if (User.IsInRole("Trainer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Trainers" asp-action="MyMembers">👥 My Members</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="feedbackDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Phản hồi
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="feedbackDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="Create">
+                                            Gửi phản hồi mới
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="MyFeedbacks">
+                                            Phản hồi của tôi
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else if (User.IsInRole("Staff"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Trainers" asp-action="Index">Trainers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Packages" asp-action="Admin">Packages</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="feedbackDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Phản hồi
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="feedbackDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="Create">
+                                            Gửi phản hồi mới
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="MyFeedbacks">
+                                            Phản hồi của tôi
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="List">
+                                            Danh sách phản hồi
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else if (User.IsInRole("Member"))
+                        {
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="paymentPackagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Gói tập & Thanh toán
+                                </a>
+                                <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="paymentPackagesDropdown">
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 text-dark" asp-controller="Packages" asp-action="Index">
+                                            <i class="bi bi-card-checklist me-2"></i>Đăng ký gói tập
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 text-dark" asp-controller="Booking" asp-action="Unpaid">
+                                            <i class="bi bi-wallet2 me-2"></i>Gói chưa thanh toán
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Chat" asp-action="Index">Chat với AI</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="feedbackDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Phản hồi
+                                </a>
+                                <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="feedbackDropdown">
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 text-dark" asp-controller="Feedback" asp-action="Create">
+                                            <i class="bi bi-chat-square-text me-2"></i>Gửi phản hồi mới
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 text-dark" asp-controller="Feedback" asp-action="MyFeedbacks">
+                                            <i class="bi bi-list-check me-2"></i>Phản hồi của tôi
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item me-2">
+                                @await Component.InvokeAsync("NotificationCount")
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Xin chào, @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="EditProfile">Trang cá nhân</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="nav-link btn btn-link" title="Đăng xuất">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container container-main">
+        <main role="main" class="pb-3">
+            <div class="content-card">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <span>© 2025 Gym Management.</span>
+            <span>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách</a> |
+                <a asp-area="" asp-controller="Home" asp-action="Contact">Liên hệ</a> |
+                <span class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </span>
+            </span>
+        </div>
+    </footer>
+    <div class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Nút tròn mở chat -->
+    <div onclick="toggleChatPopup()" title="Chat với AI 🤖"
+         style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 9999;">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="AI" style="width: 28px; height: 28px;" />
+    </div>
+
+    <!-- Chat popup (iframe) -->
+    <div id="chatPopup" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 500px; height: 580px; background: white; border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.15); z-index: 9999; overflow: hidden;">
+        <iframe src="/Chat" style="width: 100%; height: 100%; border: none; border-radius: 16px;"></iframe>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("notificationToggle")?.addEventListener("click", function () {
+                window.location.href = "/Notification/List";
+            });
+        });
+    </script>
+    <script>
+        //     $(document).ready(function () {
+        //     Load số lượng thông báo chưa đọc
+        //     $.get('/Notification/UnseenCount', function (data) {
+        //         const count = parseInt(data);
+        //         if (count > 0) {
+        //             $('#notificationCount').text(count).show();
+        //         } else {
+        //             $('#notificationCount').hide();
+        //         }
+        //     });
+
+        //     Khi click chuông thì chuyển trang
+        //     $('#notificationToggle').click(function () {
+        //         window.location.href = '/Notification/List';
+        //     });
+        // });
+
+        function toggleChatPopup() {
+            const popup = document.getElementById("chatPopup");
+            popup.style.display = popup.style.display === "none" ? "block" : "none";
+        }
+    </script>
+    @await Html.PartialAsync("_Toast")
+</body>
+</html>

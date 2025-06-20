@@ -1,0 +1,68 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+body {
+    background-color: #f0f8ff; /* xanh nhẹ */
+    color: #222;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.section-title, h2, h4 {
+    color: #007BFF;
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 30px rgba(0, 123, 255, 0.2);
+    }
+
+.btn-primary {
+    background-color: #007BFF;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.feature-icon {
+    font-size: 3rem;
+    color: #007BFF;
+    margin-bottom: 10px;
+}

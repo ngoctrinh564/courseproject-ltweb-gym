@@ -1,0 +1,95 @@
+﻿@model gym.Data.Package
+@{
+    ViewData["Title"] = "Xác nhận đăng ký";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isPT = Model.Type == "Huấn luyện cá nhân";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary">Xác nhận đăng ký gói tập</h2>
+
+    <div class="card mx-auto mt-4 shadow p-4" style="max-width: 800px;">
+        <h4 class="text-info">@Model.Name</h4>
+        <p><strong>Loại:</strong> @Model.Type</p>
+        <p><strong>Giá:</strong> @Model.Price?.ToString("N0") VNĐ</p>
+        <p><strong>Thời gian:</strong> @Model.DurationInDays ngày</p>
+        <p><strong>Mô tả:</strong> @Model.Description</p>
+
+        <form asp-action="ConfirmRegister" method="post" id="registerForm">
+            <input type="hidden" name="packageId" value="@Model.PackageId" />
+            <input type="hidden" name="trainerId" id="selectedTrainerId" />
+
+            @if (isPT)
+            {
+                <div class="form-group mt-4">
+                    <label class="fw-bold mb-2">Chọn Huấn luyện viên:</label>
+                    <div id="trainerList" class="row g-3">
+                        @foreach (var trainer in ViewBag.Trainers as List<gym.Data.Trainer>)
+                        {
+                            <div class="col-md-6">
+                                <div class="card h-100 p-2 border border-secondary rounded trainer-card">
+                                    <div class="d-flex">
+                                        <img src="/@trainer.Image" alt="@trainer.FullName" class="img-thumbnail me-3" style="width: 100px; height: 100px; object-fit: cover;">
+                                        <div>
+                                            <h5>@trainer.FullName</h5>
+                                            <p class="mb-1"><strong>Giới tính:</strong> @(trainer.Gender == true ? "Nam" : "Nữ")</p>
+                                            <p class="mb-1"><strong>Chuyên môn:</strong> @trainer.Specialty</p>
+                                            <p class="mb-1"><strong>SĐT:</strong> @trainer.Phone</p>
+                                            <p class="mb-1"><strong>Ghi chú:</strong> @trainer.ScheduleNote</p>
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input trainer-radio" type="radio" name="trainerRadio"
+                                                       value="@trainer.TrainerId" id="trainer_@trainer.TrainerId">
+                                                <label class="form-check-label" for="trainer_@trainer.TrainerId">
+                                                    Chọn huấn luyện viên này
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" class="btn btn-success" id="btnSubmit" disabled>Xác nhận đăng ký</button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet" />
+
+    <script>
+        $(function () {
+            const isPT = @isPT.ToString().ToLower(); // <== fix kiểu đúng
+
+            $('.trainer-radio').on('change', function () {
+                const selectedId = $(this).val();
+                $('#selectedTrainerId').val(selectedId);
+                $('#btnSubmit').prop('disabled', false);
+            });
+
+            if (!isPT) {
+                $('#btnSubmit').prop('disabled', false); // Gói thường không cần chọn PT vẫn bấm được
+            }
+
+            $('#registerForm').on('submit', function (e) {
+                const trainerSelected = $('#selectedTrainerId').val();
+
+                if (isPT && !trainerSelected) {
+                    e.preventDefault();
+                    toastr.warning("Vui lòng chọn huấn luyện viên trước khi đăng ký.");
+                }
+            });
+
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "timeOut": "4000"
+            };
+        });
+    </script>
+}

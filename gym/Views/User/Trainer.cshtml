@@ -1,0 +1,47 @@
+﻿@model gym.ViewModels.CreateTrainerViewModel
+@{
+    ViewData["Title"] = "Thêm huấn luyện viên";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="mb-3 text-danger">Tạo tài khoản huấn luyện viên</h2>
+    <form asp-action="Trainer" method="post" class="shadow p-4 rounded bg-light">
+        <partial name="_UserFormTrainer" />
+        <hr />
+        <div class="mb-3">
+            <label asp-for="TrainerFullName" class="form-label">Họ tên</label>
+            <input asp-for="TrainerFullName" class="form-control" />
+            <span asp-validation-for="TrainerFullName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TrainerPhone" class="form-label">Số điện thoại</label>
+            <input asp-for="TrainerPhone" class="form-control" />
+            <span asp-validation-for="TrainerPhone" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Specialty" class="form-label">Chuyên môn</label>
+            <input asp-for="Specialty" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="ScheduleNote" class="form-label">Ghi chú</label>
+            <input asp-for="ScheduleNote" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="TrainerGender" class="form-label">Giới tính</label>
+            <select asp-for="TrainerGender" class="form-select">
+                <option value="true">Nam</option>
+                <option value="false">Nữ</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Tạo huấn luyện viên</button>
+    </form>
+</div>
+<partial name="_PasswordScript" />
+
+<!-- Validation Scripts -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,831 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Gym Management Admin</title>
+
+    <!-- AdminLTE + FontAwesome + Google Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link href="/images/logo/logo.jpg" rel="icon" type="image/jpeg" />
+    <link href="/images/logo/logo.jpg" rel="shortcut icon" type="image/jpeg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-color: #f093fb;
+            --accent-color: #4facfe;
+            --success-color: #00d4aa;
+            --warning-color: #feca57;
+            --danger-color: #ff6b6b;
+            --dark-bg: #0f0f23;
+            --dark-sidebar: #1a1a2e;
+            --dark-card: #16213e;
+            --light-bg: #f8fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--light-bg);
+            font-weight: 400;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header Navbar */
+        .main-header {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border: none !important;
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            z-index: 1030;
+        }
+
+            .main-header .navbar-nav .nav-link {
+                color: var(--text-primary) !important;
+                font-weight: 500;
+                transition: var(--transition);
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+                margin: 0 0.25rem;
+            }
+
+                .main-header .navbar-nav .nav-link:hover {
+                    background: rgba(102, 126, 234, 0.1);
+                    color: var(--primary-color) !important;
+                    transform: translateY(-1px);
+                }
+
+        /* Brand Link */
+        .brand-link {
+            background: var(--primary-gradient) !important;
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 1rem !important;
+            border: none;
+            transition: var(--transition);
+        }
+
+            .brand-link:hover {
+                transform: scale(1.02);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .brand-text {
+            font-size: 1.1rem;
+            letter-spacing: -0.025em;
+        }
+
+        /* Sidebar */
+        .main-sidebar {
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            transition: var(--transition);
+        }
+
+        .sidebar {
+            padding-top: 1rem;
+        }
+
+        /* Navigation */
+        .nav-sidebar {
+            padding: 0 1rem;
+        }
+
+            .nav-sidebar .nav-item {
+                margin-bottom: 0.25rem;
+            }
+
+            .nav-sidebar .nav-link {
+                color: rgba(255, 255, 255, 0.85) !important;
+                border-radius: var(--border-radius);
+                padding: 0.75rem 1rem;
+                font-weight: 500;
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .nav-sidebar .nav-link::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                    transition: var(--transition);
+                }
+
+                .nav-sidebar .nav-link:hover::before {
+                    left: 100%;
+                }
+
+                .nav-sidebar .nav-link:hover {
+                    background: rgba(255, 255, 255, 0.15) !important;
+                    color: white !important;
+                    transform: translateX(5px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                }
+
+                .nav-sidebar .nav-link.active {
+                    background: rgba(255, 255, 255, 0.2) !important;
+                    color: white !important;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                    font-weight: 600;
+                }
+
+                .nav-sidebar .nav-link .nav-icon {
+                    margin-right: 0.75rem;
+                    width: 20px;
+                    text-align: center;
+                    transition: var(--transition);
+                }
+
+                .nav-sidebar .nav-link:hover .nav-icon {
+                    transform: scale(1.1);
+                }
+
+        /* Treeview Menu */
+        .nav-treeview {
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+
+            .nav-treeview .nav-link {
+                padding-left: 2.5rem;
+                color: rgba(255, 255, 255, 0.7) !important;
+                font-size: 0.9rem;
+            }
+
+                .nav-treeview .nav-link:hover {
+                    color: white !important;
+                    background: rgba(255, 255, 255, 0.1) !important;
+                }
+
+                .nav-treeview .nav-link.active {
+                    background: rgba(255, 255, 255, 0.15) !important;
+                    color: white !important;
+                }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            background: var(--light-bg);
+            padding-top: 80px;
+            min-height: calc(100vh - 60px);
+            transition: var(--transition);
+        }
+
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            background: white;
+            backdrop-filter: blur(20px);
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: var(--transition);
+            margin-bottom: 0.25rem;
+        }
+
+            .dropdown-item:hover {
+                background: var(--primary-gradient);
+                color: white;
+                transform: translateX(3px);
+            }
+
+            .dropdown-item i {
+                width: 20px;
+                text-align: center;
+            }
+
+        /* Footer */
+        .main-footer {
+            background: white;
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: var(--dark-bg) !important;
+            color: #e2e8f0;
+        }
+
+            .dark-mode .main-header {
+                background: rgba(26, 26, 46, 0.95) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+                .dark-mode .main-header .navbar-nav .nav-link {
+                    color: #e2e8f0 !important;
+                }
+
+                    .dark-mode .main-header .navbar-nav .nav-link:hover {
+                        background: rgba(102, 126, 234, 0.2);
+                        color: var(--accent-color) !important;
+                    }
+
+            .dark-mode .content-wrapper {
+                background: var(--dark-bg);
+            }
+
+            .dark-mode .main-footer {
+                background: var(--dark-sidebar);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                color: #a0aec0;
+            }
+
+            .dark-mode .dropdown-menu {
+                background: var(--dark-card);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .dark-mode .dropdown-item {
+                color: #e2e8f0;
+            }
+
+                .dark-mode .dropdown-item:hover {
+                    background: var(--primary-gradient);
+                    color: white;
+                }
+
+        /* Animations */
+        @@keyframes slideInLeft {
+            from
+
+        {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        }
+
+        @@keyframes fadeInUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .nav-sidebar .nav-item {
+            animation: slideInLeft 0.3s ease-out;
+            animation-fill-mode: both;
+        }
+
+            .nav-sidebar .nav-item:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .nav-sidebar .nav-item:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .nav-sidebar .nav-item:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .nav-sidebar .nav-item:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+            .nav-sidebar .nav-item:nth-child(5) {
+                animation-delay: 0.5s;
+            }
+
+            .nav-sidebar .nav-item:nth-child(6) {
+                animation-delay: 0.6s;
+            }
+
+        .content {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .content-wrapper
+
+        {
+            padding-top: 60px;
+        }
+
+        .content {
+            padding: 1rem;
+        }
+
+        .nav-sidebar .nav-link {
+            font-size: 0.9rem;
+        }
+
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+            .sidebar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+
+        /* Loading spinner for smooth transitions */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+            .page-loading.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        /* Enhanced hover effects */
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.8);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
+            }
+
+        /* Button enhancements */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-md);
+            }
+
+        /* Card enhancements for content area */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+            .card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+            }
+
+        .dark-mode .card {
+            background: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <!-- Loading Spinner -->
+    <div class="page-loading" id="pageLoading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-light fixed-top">
+            <div class="container-fluid">
+                <!-- Left: Sidebar toggle -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button" title="Toggle Sidebar">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Right: User menu + dark mode toggle -->
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <!-- Dark Mode toggle -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="darkModeToggle" title="Chế độ tối/sáng">
+                            <i id="darkModeIcon" class="fas fa-moon"></i>
+                        </a>
+                    </li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown">
+                                <div class="user-avatar mr-2">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <span class="user-name">@User.Identity.Name</span>
+                                <i class="fas fa-chevron-down ml-2" style="font-size: 0.8rem;"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" asp-controller="Account" asp-action="EditProfile">
+                                    <i class="fas fa-user-edit"></i> Trang cá nhân
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="mb-0">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="main-sidebar elevation-4">
+            <a href="@Url.Action("Dashboard", "Admin")" class="brand-link text-center">
+                <i class="fas fa-dumbbell mr-2"></i>
+                <span class="brand-text">Gym Admin</span>
+            </a>
+
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+
+                        <li class="nav-item">
+                            <a asp-controller="Admin" asp-action="Dashboard" class="nav-link @(currentController == "Home" ? "active" : "")">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+
+                        @{
+                            var isUsersController = currentController == "Users";
+                        }
+
+                        <li class="nav-item has-treeview @(isUsersController ? "menu-open" : "")">
+                            <a href="#" class="nav-link @(isUsersController ? "active" : "")">
+                                <i class="nav-icon fas fa-users-cog"></i>
+                                <p>
+                                    Người dùng
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="Users" asp-action="Index" class="nav-link @(currentAction == "Index" && isUsersController ? "active" : "")">
+                                        <i class="far fa-list-alt nav-icon"></i>
+                                        <p>Danh sách</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="User" asp-action="Member" class="nav-link @(currentAction == "CreateMember" && isUsersController ? "active" : "")">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <p>Thêm hội viên</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="User" asp-action="Staff" class="nav-link @(currentAction == "CreateStaff" && isUsersController ? "active" : "")">
+                                        <i class="fas fa-user-tie nav-icon"></i>
+                                        <p>Thêm nhân viên</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="User" asp-action="Trainer" class="nav-link @(currentAction == "CreateTrainer" && isUsersController ? "active" : "")">
+                                        <i class="fas fa-dumbbell nav-icon"></i>
+                                        <p>Thêm huấn luyện viên</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Trainers" asp-action="Index" class="nav-link @(currentController == "Trainers" ? "active" : "")">
+                                <i class="nav-icon fas fa-user-shield"></i>
+                                <p>Huấn luyện viên</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Staffs" asp-action="Index" class="nav-link @(currentController == "Staffs" ? "active" : "")">
+                                <i class="nav-icon fas fa-user-tie"></i>
+                                <p>Nhân viên</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Members" asp-action="Index" class="nav-link @(currentController == "Members" ? "active" : "")">
+                                <i class="nav-icon fas fa-user-friends"></i>
+                                <p>Hội viên</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Packages" asp-action="Admin" class="nav-link @(currentController == "Packages" ? "active" : "")">
+                                <i class="nav-icon fas fa-box-open"></i>
+                                <p>Gói tập</p>
+                            </a>
+                        </li>
+
+                        <!-- Thông báo -->
+                        <li class="nav-item has-treeview @(currentController == "Notifications" ? "menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController == "Notifications" ? "active" : "")">
+                                <i class="nav-icon fas fa-bell"></i>
+                                <p>
+                                    Thông báo
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="Notifications" asp-action="NotificationsSent" class="nav-link @(currentAction == "NotificationsSent" && currentController == "Notifications" ? "active" : "")">
+                                        <i class="far fa-paper-plane nav-icon"></i>
+                                        <p>Thông báo đã gửi</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Notifications" asp-action="Create" class="nav-link @(currentAction == "Create" && currentController == "Notifications" ? "active" : "")">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <p>Tạo thông báo</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Feedback" asp-action="List" class="nav-link @(currentController == "Feedback" ? "active" : "")">
+                                <i class="nav-icon fas fa-comments"></i>
+                                <p>Danh sách phản hồi</p>
+                            </a>
+                        </li>
+
+                        <!-- Báo cáo -->
+                        <li class="nav-item">
+                            <a asp-controller="Report" asp-action="Revenue" class="nav-link @(currentController == "Report" ? "active" : "")">
+                                <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                                <p>Báo cáo</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-block">
+                <b>Version</b> 1.0.0
+            </div>
+            <strong>&copy; 2025 Gym Management.</strong> All rights reserved.
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
+    <script>
+        // Loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loading = document.getElementById('pageLoading');
+
+            // Hide loading after page is fully loaded
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    loading.classList.remove('active');
+                }, 300);
+            });
+        });
+
+        // Dark mode functionality
+        const toggleBtn = document.getElementById('darkModeToggle');
+        const icon = document.getElementById('darkModeIcon');
+
+        const setIcon = (dark) => {
+            icon.classList.remove('fa-sun', 'fa-moon');
+            icon.classList.add(dark ? 'fa-sun' : 'fa-moon');
+        };
+
+        // Initialize dark mode
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = localStorage.getItem('dark-mode') === 'true';
+            document.body.classList.toggle('dark-mode', isDark);
+            setIcon(isDark);
+        });
+
+        // Toggle dark mode
+        toggleBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', isDark);
+            setIcon(isDark);
+
+            // Add smooth transition effect
+            document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        });
+
+        // Enhanced navigation effects
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+
+            link.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'translateX(0)';
+                }
+            });
+        });
+
+        // Smooth page transitions
+        document.querySelectorAll('a[asp-controller], a[asp-action]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href') && !this.getAttribute('href').startsWith('#')) {
+                    const loading = document.getElementById('pageLoading');
+                    loading.classList.add('active');
+                }
+            });
+        });
+
+        // Enhanced dropdown animations
+        document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const menu = this.nextElementSibling;
+                if (menu && menu.classList.contains('dropdown-menu')) {
+                    menu.style.opacity = '0';
+                    menu.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        menu.style.opacity = '1';
+                        menu.style.transform = 'translateY(0)';
+                    }, 10);
+                }
+            });
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.nav-link, .btn, .dropdown-item').forEach(element => {
+            element.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+
+            @@keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    @await Html.PartialAsync("_Toast")
+</body>
+</html>
