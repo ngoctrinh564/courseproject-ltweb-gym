@@ -1,8 +1,8 @@
-# Gym Management Web Application
+# 🎯 Gym Management Web Application
 
 This repository contains an ASP.NET Core MVC project for managing a gym. It provides basic membership management, package registration, payment handling, a simple chatbot and notification features.
 
-## Features
+## ✨ Features
 
 - **User Accounts**: Register, login and profile management with roles for Admin, Member, Staff and Trainer.
 - **Membership Management**: CRUD operations for members and packages with expiration tracking.
@@ -11,7 +11,7 @@ This repository contains an ASP.NET Core MVC project for managing a gym. It prov
 - **Feedback**: Members can send feedback and view their history, admins can view all feedback.
 - **Chatbot**: Integrates with OpenAI to answer questions about available packages.
 
-## Project Structure
+## 🗂️ Project Structure
 
 - `gym/` – ASP.NET Core project source
   - `Controllers/` – MVC controllers (Account, Admin, Booking, etc.)
@@ -21,13 +21,13 @@ This repository contains an ASP.NET Core MVC project for managing a gym. It prov
   - `Views/` – Razor views for the web UI
 - `gym.sln` – Visual Studio solution file
 
-## Requirements
+## ✅ Requirements
 
 - .NET SDK 9.0 or newer
 - SQL Server instance (connection string configured in `appsettings.json`)
 - Optional: Visual Studio 2022 or `dotnet` CLI
 
-## Getting Started
+## 🚀 Getting Started
 
 1. **Clone the repository**
    ```bash
@@ -48,10 +48,34 @@ This repository contains an ASP.NET Core MVC project for managing a gym. It prov
 
 Open the solution in Visual Studio if you prefer an IDE workflow.
 
-## Note
+## 📌 Note
 
 The project references several NuGet packages (`DinkToPdf`, `EPPlus`, `itext7`, `PayPalCheckoutSdk` and others). Ensure these packages restore successfully when building the project.
 
-## License
+## 🔒 License
 
 This project is provided for educational purposes. It does not include a specific license.
+
+## 👥 The Dev Team
+<div align="center">
+	<table>
+		<tr>
+			<td align="center" valign="top">
+					<img src="https://github.com/haihttt974.png?s=150" loading="lazy" width="150" height="150">
+	        <br>
+	        <a href="https://github.com/haihttt974">Duy Hải</a>
+	        <p>
+	          <a href="https://github.com/haihttt974/courseproject-ltweb-gym/commits/master/?author=haihttt974" title="Developer">💻</a>
+	        </p>
+			</td>
+			<td align="center" valign="top">
+					<img src="https://github.com/ngoctrinh564.png?s=150" loading="lazy" width="150" height="150">
+	        <br>
+	        <a href="https://github.com/ngoctrinh564">Ngọc Trinh</a>
+	        <p>
+	          <a href="https://github.com/haihttt974/courseproject-ltweb-gym/commits/master/?author=ngoctrinh564" title="Developer">💻</a>
+	        </p>
+			</td>
+		</tr>
+	</table>
+</div>
